@@ -8,6 +8,7 @@ import br.com.dio.service.BoardService;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -19,7 +20,7 @@ import static br.com.dio.persistence.entity.BoardColumnKindEnum.PENDING;
 
 public class MainMenu {
 
-    private final Scanner scanner = new Scanner(System.in).useDelimiter("\n");
+    private final Scanner scanner = new Scanner(System.in);
 
     public void execute() throws SQLException {
         System.out.println("Bem vindo ao gerenciador de boards, escolha a opção desejada");
@@ -29,13 +30,19 @@ public class MainMenu {
             System.out.println("2 - Selecionar um board existente");
             System.out.println("3 - Excluir um board");
             System.out.println("4 - Sair");
-            option = scanner.nextInt();
-            switch (option){
-                case 1 -> createBoard();
-                case 2 -> selectBoard();
-                case 3 -> deleteBoard();
-                case 4 -> System.exit(0);
-                default -> System.out.println("Opção inválida, informe uma opção do menu");
+            
+            try {
+                option = scanner.nextInt();
+                switch (option){
+                    case 1 -> createBoard();
+                    case 2 -> selectBoard();
+                    case 3 -> deleteBoard();
+                    case 4 -> System.exit(0);
+                    default -> System.out.println("Opção inválida, informe uma opção do menu");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Erro: Por favor, digite apenas números (1, 2, 3 ou 4)");
+                scanner.nextLine(); // Limpa o buffer do scanner
             }
         }
     }
@@ -43,32 +50,46 @@ public class MainMenu {
     private void createBoard() throws SQLException {
         var entity = new BoardEntity();
         System.out.println("Informe o nome do seu board");
-        entity.setName(scanner.next());
+        entity.setName(scanner.nextLine());
 
         System.out.println("Seu board terá colunas além das 3 padrões? Se sim informe quantas, senão digite '0'");
-        var additionalColumns = scanner.nextInt();
+        var additionalColumns = 0;
+        try {
+            additionalColumns = scanner.nextInt();
+            if (additionalColumns < 0) {
+                System.out.println("Número de colunas não pode ser negativo. Definindo como 0.");
+                additionalColumns = 0;
+            }
+        } catch (InputMismatchException e) {
+            System.out.println("Erro: Por favor, digite apenas números. Definindo como 0.");
+            scanner.nextLine(); 
+            additionalColumns = 0;
+        }
+        
+        // Limpar o buffer do scanner após nextInt()
+        scanner.nextLine();
 
         List<BoardColumnEntity> columns = new ArrayList<>();
 
         System.out.println("Informe o nome da coluna inicial do board");
-        var initialColumnName = scanner.next();
+        var initialColumnName = scanner.nextLine();
         var initialColumn = createColumn(initialColumnName, INITIAL, 0);
         columns.add(initialColumn);
 
         for (int i = 0; i < additionalColumns; i++) {
             System.out.println("Informe o nome da coluna de tarefa pendente do board");
-            var pendingColumnName = scanner.next();
+            var pendingColumnName = scanner.nextLine();
             var pendingColumn = createColumn(pendingColumnName, PENDING, i + 1);
             columns.add(pendingColumn);
         }
 
         System.out.println("Informe o nome da coluna final");
-        var finalColumnName = scanner.next();
+        var finalColumnName = scanner.nextLine();
         var finalColumn = createColumn(finalColumnName, FINAL, additionalColumns + 1);
         columns.add(finalColumn);
 
-        System.out.println("Informe o nome da coluna de cancelamento do baord");
-        var cancelColumnName = scanner.next();
+        System.out.println("Informe o nome da coluna de cancelamento do board");
+        var cancelColumnName = scanner.nextLine();
         var cancelColumn = createColumn(cancelColumnName, CANCEL, additionalColumns + 2);
         columns.add(cancelColumn);
 
@@ -76,13 +97,21 @@ public class MainMenu {
         try(var connection = getConnection()){
             var service = new BoardService(connection);
             service.insert(entity);
+            System.out.println("Board criado com sucesso!");
         }
-
     }
 
     private void selectBoard() throws SQLException {
         System.out.println("Informe o id do board que deseja selecionar");
-        var id = scanner.nextLong();
+        final long id;
+        try {
+            id = scanner.nextLong();
+        } catch (InputMismatchException e) {
+            System.out.println("Erro: Por favor, digite apenas números para o ID do board");
+            scanner.nextLine(); // Limpa o buffer
+            return;
+        }
+        
         try(var connection = getConnection()){
             var queryService = new BoardQueryService(connection);
             var optional = queryService.findById(id);
@@ -94,12 +123,20 @@ public class MainMenu {
     }
 
     private void deleteBoard() throws SQLException {
-        System.out.println("Informe o id do board que será excluido");
-        var id = scanner.nextLong();
+        System.out.println("Informe o id do board que será excluído");
+        final long id;
+        try {
+            id = scanner.nextLong();
+        } catch (InputMismatchException e) {
+            System.out.println("Erro: Por favor, digite apenas números para o ID do board");
+            scanner.nextLine(); // Limpa o buffer
+            return;
+        }
+        
         try(var connection = getConnection()){
             var service = new BoardService(connection);
             if (service.delete(id)){
-                System.out.printf("O board %s foi excluido\n", id);
+                System.out.printf("O board %s foi excluído\n", id);
             } else {
                 System.out.printf("Não foi encontrado um board com id %s\n", id);
             }

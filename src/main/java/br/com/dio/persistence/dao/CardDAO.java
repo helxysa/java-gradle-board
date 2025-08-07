@@ -1,6 +1,7 @@
 package br.com.dio.persistence.dao;
 
 import br.com.dio.dto.CardDetailsDTO;
+import br.com.dio.persistence.config.DatabaseConfig;
 import br.com.dio.persistence.entity.CardEntity;
 import com.mysql.cj.jdbc.StatementImpl;
 import lombok.AllArgsConstructor;
@@ -18,14 +19,28 @@ public class CardDAO {
     private Connection connection;
 
     public CardEntity insert(final CardEntity entity) throws SQLException {
-        var sql = "INSERT INTO CARDS (title, description, board_column_id) values (?, ?, ?);";
-        try(var statement = connection.prepareStatement(sql)){
+        String sql;
+        if (DatabaseConfig.isH2()) {
+            sql = "INSERT INTO CARDS (title, description, board_column_id) VALUES (?, ?, ?);";
+        } else {
+            sql = "INSERT INTO CARDS (title, description, board_column_id) values (?, ?, ?);";
+        }
+        try(var statement = connection.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS)){
             var i = 1;
             statement.setString(i ++, entity.getTitle());
             statement.setString(i ++, entity.getDescription());
             statement.setLong(i, entity.getBoardColumn().getId());
             statement.executeUpdate();
-            if (statement instanceof StatementImpl impl){
+            
+            if (DatabaseConfig.isH2()) {
+                // Para H2, usar getGeneratedKeys
+                try (var generatedKeys = statement.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        entity.setId(generatedKeys.getLong(1));
+                    }
+                }
+            } else if (statement instanceof StatementImpl impl){
+                // Para MySQL, usar getLastInsertID
                 entity.setId(impl.getLastInsertID());
             }
         }
@@ -43,8 +58,9 @@ public class CardDAO {
     }
 
     public Optional<CardDetailsDTO> findById(final Long id) throws SQLException {
-        var sql =
-                """
+        String sql;
+        if (DatabaseConfig.isH2()) {
+            sql = """
                 SELECT c.id,
                        c.title,
                        c.description,
@@ -63,6 +79,27 @@ public class CardDAO {
                     ON bc.id = c.board_column_id
                   WHERE c.id = ?;
                 """;
+        } else {
+            sql = """
+                SELECT c.id,
+                       c.title,
+                       c.description,
+                       b.blocked_at,
+                       b.block_reason,
+                       c.board_column_id,
+                       bc.name,
+                       (SELECT COUNT(sub_b.id)
+                               FROM BLOCKS sub_b
+                              WHERE sub_b.card_id = c.id) blocks_amount
+                  FROM CARDS c
+                  LEFT JOIN BLOCKS b
+                    ON c.id = b.card_id
+                   AND b.unblocked_at IS NULL
+                 INNER JOIN BOARDS_COLUMNS bc
+                    ON bc.id = c.board_column_id
+                  WHERE c.id = ?;
+                """;
+        }
         try(var statement = connection.prepareStatement(sql)){
             statement.setLong(1, id);
             statement.executeQuery();

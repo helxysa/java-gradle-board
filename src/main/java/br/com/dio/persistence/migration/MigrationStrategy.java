@@ -1,5 +1,6 @@
 package br.com.dio.persistence.migration;
 
+import br.com.dio.persistence.config.DatabaseConfig;
 import liquibase.Liquibase;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
@@ -29,8 +30,13 @@ public class MigrationStrategy {
                     var connection = getConnection();
                     var jdbcConnection = new JdbcConnection(connection);
             ){
+                // Determina qual changelog usar baseado no tipo de banco
+                String changelogPath = DatabaseConfig.isH2() 
+                    ? "/db/changelog/db.changelog-h2.yml"
+                    : "/db/changelog/db.changelog-master.yml";
+                
                 var liquibase = new Liquibase(
-                        "/db/changelog/db.changelog-master.yml",
+                        changelogPath,
                         new ClassLoaderResourceAccessor(),
                         jdbcConnection);
                 liquibase.update();

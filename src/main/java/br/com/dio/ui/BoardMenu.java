@@ -18,7 +18,7 @@ import static br.com.dio.persistence.config.ConnectionConfig.getConnection;
 @AllArgsConstructor
 public class BoardMenu {
 
-    private final Scanner scanner = new Scanner(System.in).useDelimiter("\n");
+    private final Scanner scanner = new Scanner(System.in);
 
     private final BoardEntity entity;
 
@@ -61,9 +61,9 @@ public class BoardMenu {
     private void createCard() throws SQLException{
         var card = new CardEntity();
         System.out.println("Informe o título do card");
-        card.setTitle(scanner.next());
+        card.setTitle(scanner.nextLine());
         System.out.println("Informe a descrição do card");
-        card.setDescription(scanner.next());
+        card.setDescription(scanner.nextLine());
         card.setBoardColumn(entity.getInitialColumn());
         try(var connection = getConnection()){
             new CardService(connection).create(card);
@@ -87,7 +87,7 @@ public class BoardMenu {
         System.out.println("Informe o id do card que será bloqueado");
         var cardId = scanner.nextLong();
         System.out.println("Informe o motivo do bloqueio do card");
-        var reason = scanner.next();
+        var reason = scanner.nextLine();
         var boardColumnsInfo = entity.getBoardColumns().stream()
                 .map(bc -> new BoardColumnInfoDTO(bc.getId(), bc.getOrder(), bc.getKind()))
                 .toList();
@@ -102,7 +102,7 @@ public class BoardMenu {
         System.out.println("Informe o id do card que será desbloqueado");
         var cardId = scanner.nextLong();
         System.out.println("Informe o motivo do desbloqueio do card");
-        var reason = scanner.next();
+        var reason = scanner.nextLine();
         try(var connection = getConnection()){
             new CardService(connection).unblock(cardId, reason);
         } catch (RuntimeException ex){

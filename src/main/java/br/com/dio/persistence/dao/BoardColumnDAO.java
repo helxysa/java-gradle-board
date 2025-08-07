@@ -1,6 +1,7 @@
 package br.com.dio.persistence.dao;
 
 import br.com.dio.dto.BoardColumnDTO;
+import br.com.dio.persistence.config.DatabaseConfig;
 import br.com.dio.persistence.entity.BoardColumnEntity;
 import br.com.dio.persistence.entity.CardEntity;
 import com.mysql.cj.jdbc.StatementImpl;
@@ -21,15 +22,29 @@ public class BoardColumnDAO {
     private final Connection connection;
 
     public BoardColumnEntity insert(final BoardColumnEntity entity) throws SQLException {
-        var sql = "INSERT INTO BOARDS_COLUMNS (name, `order`, kind, board_id) VALUES (?, ?, ?, ?);";
-        try(var statement = connection.prepareStatement(sql)){
+        String sql;
+        if (DatabaseConfig.isH2()) {
+            sql = "INSERT INTO BOARDS_COLUMNS (name, \"order\", kind, board_id) VALUES (?, ?, ?, ?);";
+        } else {
+            sql = "INSERT INTO BOARDS_COLUMNS (name, `order`, kind, board_id) VALUES (?, ?, ?, ?);";
+        }
+        try(var statement = connection.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS)){
             var i = 1;
             statement.setString(i ++, entity.getName());
             statement.setInt(i ++, entity.getOrder());
             statement.setString(i ++, entity.getKind().name());
             statement.setLong(i, entity.getBoard().getId());
             statement.executeUpdate();
-            if (statement instanceof StatementImpl impl){
+            
+            if (DatabaseConfig.isH2()) {
+                // Para H2, usar getGeneratedKeys
+                try (var generatedKeys = statement.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        entity.setId(generatedKeys.getLong(1));
+                    }
+                }
+            } else if (statement instanceof StatementImpl impl){
+                // Para MySQL, usar getLastInsertID
                 entity.setId(impl.getLastInsertID());
             }
             return entity;
@@ -38,7 +53,12 @@ public class BoardColumnDAO {
 
     public List<BoardColumnEntity> findByBoardId(final Long boardId) throws SQLException{
         List<BoardColumnEntity> entities = new ArrayList<>();
-        var sql = "SELECT id, name, `order`, kind FROM BOARDS_COLUMNS WHERE board_id = ? ORDER BY `order`";
+        String sql;
+        if (DatabaseConfig.isH2()) {
+            sql = "SELECT id, name, \"order\", kind FROM BOARDS_COLUMNS WHERE board_id = ? ORDER BY \"order\"";
+        } else {
+            sql = "SELECT id, name, `order`, kind FROM BOARDS_COLUMNS WHERE board_id = ? ORDER BY `order`";
+        }
         try(var statement = connection.prepareStatement(sql)){
             statement.setLong(1, boardId);
             statement.executeQuery();
@@ -57,8 +77,21 @@ public class BoardColumnDAO {
 
     public List<BoardColumnDTO> findByBoardIdWithDetails(final Long boardId) throws SQLException {
         List<BoardColumnDTO> dtos = new ArrayList<>();
-        var sql =
-                """
+        String sql;
+        if (DatabaseConfig.isH2()) {
+            sql = """
+                SELECT bc.id,
+                       bc.name,
+                       bc.kind,
+                       (SELECT COUNT(c.id)
+                               FROM CARDS c
+                              WHERE c.board_column_id = bc.id) cards_amount
+                  FROM BOARDS_COLUMNS bc
+                 WHERE board_id = ?
+                 ORDER BY "order";
+                """;
+        } else {
+            sql = """
                 SELECT bc.id,
                        bc.name,
                        bc.kind,
@@ -69,6 +102,7 @@ public class BoardColumnDAO {
                  WHERE board_id = ?
                  ORDER BY `order`;
                 """;
+        }
         try(var statement = connection.prepareStatement(sql)){
             statement.setLong(1, boardId);
             statement.executeQuery();
@@ -87,18 +121,32 @@ public class BoardColumnDAO {
     }
 
     public Optional<BoardColumnEntity> findById(final Long boardId) throws SQLException{
-        var sql =
-        """
-        SELECT bc.name,
-               bc.kind,
-               c.id,
-               c.title,
-               c.description
-          FROM BOARDS_COLUMNS bc
-          LEFT JOIN CARDS c
-            ON c.board_column_id = bc.id
-         WHERE bc.id = ?;
-        """;
+        String sql;
+        if (DatabaseConfig.isH2()) {
+            sql = """
+            SELECT bc.name,
+                   bc.kind,
+                   c.id,
+                   c.title,
+                   c.description
+              FROM BOARDS_COLUMNS bc
+              LEFT JOIN CARDS c
+                ON c.board_column_id = bc.id
+             WHERE bc.id = ?;
+            """;
+        } else {
+            sql = """
+            SELECT bc.name,
+                   bc.kind,
+                   c.id,
+                   c.title,
+                   c.description
+              FROM BOARDS_COLUMNS bc
+              LEFT JOIN CARDS c
+                ON c.board_column_id = bc.id
+             WHERE bc.id = ?;
+            """;
+        }
         try(var statement = connection.prepareStatement(sql)){
             statement.setLong(1, boardId);
             statement.executeQuery();

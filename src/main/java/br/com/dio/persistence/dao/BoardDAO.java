@@ -1,5 +1,6 @@
 package br.com.dio.persistence.dao;
 
+import br.com.dio.persistence.config.DatabaseConfig;
 import br.com.dio.persistence.entity.BoardEntity;
 import com.mysql.cj.jdbc.StatementImpl;
 import lombok.AllArgsConstructor;
@@ -14,11 +15,25 @@ public class BoardDAO {
     private Connection connection;
 
     public BoardEntity insert(final BoardEntity entity) throws SQLException {
-        var sql = "INSERT INTO BOARDS (name) values (?);";
-        try(var statement = connection.prepareStatement(sql)){
+        String sql;
+        if (DatabaseConfig.isH2()) {
+            sql = "INSERT INTO BOARDS (name) VALUES (?);";
+        } else {
+            sql = "INSERT INTO BOARDS (name) values (?);";
+        }
+        try(var statement = connection.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS)){
             statement.setString(1, entity.getName());
             statement.executeUpdate();
-            if (statement instanceof StatementImpl impl){
+            
+            if (DatabaseConfig.isH2()) {
+                // Para H2, usar getGeneratedKeys
+                try (var generatedKeys = statement.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        entity.setId(generatedKeys.getLong(1));
+                    }
+                }
+            } else if (statement instanceof StatementImpl impl){
+                // Para MySQL, usar getLastInsertID
                 entity.setId(impl.getLastInsertID());
             }
         }
