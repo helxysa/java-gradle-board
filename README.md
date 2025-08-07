@@ -1,14 +1,14 @@
-# �� Sistema de Gerenciamento de Kanban Board
+# Sistema de Gerenciamento de Kanban Board
 
 Um sistema completo de gerenciamento de quadros Kanban desenvolvido em Java, permitindo a criação e gestão de boards, colunas e cards para organização de tarefas e projetos.
 
-## 🚀 Funcionalidades
+## Funcionalidades
 
 ### Gerenciamento de Boards
-- ✅ Criar novos quadros personalizados
-- ✅ Selecionar e gerenciar boards existentes
-- ✅ Excluir boards quando necessário
-- ✅ Configuração flexível de colunas
+- Criar novos quadros personalizados
+- Selecionar e gerenciar boards existentes
+- Excluir boards quando necessário
+- Configuração flexível de colunas
 
 ### Sistema de Colunas
 - **INITIAL**: Coluna inicial onde os cards começam
@@ -17,13 +17,13 @@ Um sistema completo de gerenciamento de quadros Kanban desenvolvido em Java, per
 - **CANCEL**: Coluna para tarefas canceladas
 
 ### Gerenciamento de Cards
-- ✅ Criar cards com título e descrição
-- ✅ Mover cards entre colunas
-- ✅ Bloquear/desbloquear cards com motivo
-- ✅ Cancelar cards
-- ✅ Visualizar detalhes de cards e colunas
+- Criar cards com título e descrição
+- Mover cards entre colunas
+- Bloquear/desbloquear cards com motivo
+- Cancelar cards
+- Visualizar detalhes de cards e colunas
 
-## 🛠️ Tecnologias Utilizadas
+## Tecnologias Utilizadas
 
 - **Java 21** - Linguagem principal
 - **MySQL** - Banco de dados relacional (produção)
@@ -33,15 +33,13 @@ Um sistema completo de gerenciamento de quadros Kanban desenvolvido em Java, per
 - **JDBC** - Conexão com banco de dados
 - **Gradle** - Gerenciamento de dependências
 
-## 📋 Pré-requisitos
+## Pré-requisitos
 
 - Java 21 ou superior
 - MySQL 8.0 ou superior (apenas para produção)
 - Gradle (opcional, o projeto inclui o wrapper)
 
-**💡 Dica**: Para testes rápidos, o projeto usa H2 Database por padrão (não requer instalação).
-
-## 🔧 Instalação e Configuração
+## Instalação e Configuração
 
 ### 1. Clone o repositório
 ```bash
@@ -49,14 +47,18 @@ git clone <url-do-repositorio>
 cd asdasd
 ```
 
-### 2. Configure o MySQL
+### 2. Configuração do Banco de Dados
 
-#### Instalar MySQL
+O sistema oferece flexibilidade total na escolha do banco de dados, permitindo o uso tanto do MySQL para ambientes de produção quanto do H2 Database para desenvolvimento e testes.
+
+#### Opção A: MySQL (Recomendado para Produção)
+
+**Instalar MySQL**
 - **Windows**: Baixe o [MySQL Installer](https://dev.mysql.com/downloads/installer/)
 - **Linux**: `sudo apt install mysql-server`
 - **macOS**: `brew install mysql`
 
-#### Criar banco e usuário
+**Criar banco e usuário**
 ```sql
 -- Conecte no MySQL como root
 mysql -u root -p
@@ -72,8 +74,7 @@ GRANT ALL PRIVILEGES ON board.* TO 'board'@'localhost';
 FLUSH PRIVILEGES;
 ```
 
-### 3. Configure as credenciais
-
+**Configurar credenciais**
 Edite o arquivo `src/main/java/br/com/dio/persistence/config/ConnectionConfig.java`:
 
 ```java
@@ -85,7 +86,18 @@ public static Connection getConnection() throws SQLException {
 }
 ```
 
-### 4. Execute o projeto
+#### Opção B: H2 Database (Recomendado para Desenvolvimento)
+
+O H2 Database é configurado por padrão e não requer instalação adicional. É ideal para:
+- Desenvolvimento rápido
+- Testes automatizados
+- Demonstrações
+- Ambientes sem acesso ao MySQL
+
+Para usar o H2, não é necessária nenhuma configuração adicional. O sistema detectará automaticamente e utilizará o banco em memória.
+
+### 3. Executar o projeto
+
 ```bash
 # Usando Gradle Wrapper (recomendado)
 ./gradlew run
@@ -95,9 +107,7 @@ public static Connection getConnection() throws SQLException {
 java -cp build/libs/asdasd-1.0-SNAPSHOT.jar br.com.dio.Main
 ```
 
-**🚀 Teste Rápido**: O projeto já está configurado para usar H2 Database. Basta executar `./gradlew run`!
-
-## 🎯 Como Usar
+## Como Usar
 
 ### Menu Principal
 ```
@@ -136,7 +146,7 @@ java -cp build/libs/asdasd-1.0-SNAPSHOT.jar br.com.dio.Main
    - Cards começam na coluna inicial
    - Mova conforme o progresso do trabalho
 
-## 📁 Estrutura do Projeto
+## Estrutura do Projeto
 
 ```
 src/main/java/br/com/dio/
@@ -152,13 +162,13 @@ src/main/java/br/com/dio/
 └── ui/                   # Interface do usuário
 ```
 
-## 🗄️ Migrações do Banco
+## Migrações do Banco
 
 O projeto utiliza Liquibase para gerenciar as migrações do banco de dados. As migrações estão localizadas em:
 - `src/main/resources/db/changelog/db.changelog-master.yml`
 - `src/main/resources/db/changelog/migrations/`
 
-## 🐛 Solução de Problemas
+## Solução de Problemas
 
 ### Erro de Conexão com MySQL
 ```
@@ -178,21 +188,21 @@ Database not found
 ```
 **Solução**: O H2 é um banco em memória, não requer configuração adicional.
 
-## 📚 Documentação Adicional
+## Documentação Adicional
 
 - [Configuração de Banco de Dados](DATABASE_SETUP.md) - Guia detalhado para MySQL e H2
 
-## 🚀 Próximas Funcionalidades
+## Próximas Funcionalidades
 
-- [ ] Sistema de usuários e autenticação
-- [ ] Interface web com Spring Boot
-- [ ] Sistema de comentários nos cards
-- [ ] Notificações e alertas
-- [ ] Relatórios e métricas
-- [ ] Templates de boards
-- [ ] Integração com APIs externas
+- Sistema de usuários e autenticação
+- Interface web com Spring Boot
+- Sistema de comentários nos cards
+- Notificações e alertas
+- Relatórios e métricas
+- Templates de boards
+- Integração com APIs externas
 
-## 🤝 Contribuição
+## Contribuição
 
 1. Faça um fork do projeto
 2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
@@ -200,14 +210,10 @@ Database not found
 4. Push para a branch (`git push origin feature/AmazingFeature`)
 5. Abra um Pull Request
 
-## 📝 Licença
+## Licença
 
 Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
 
-## 👨‍💻 Autor
+## Autor
 
 Desenvolvido como parte do curso de Java da DIO.
-
----
-
-**⭐ Se este projeto te ajudou, considere dar uma estrela!**

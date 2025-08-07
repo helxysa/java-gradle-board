@@ -1,50 +1,50 @@
-ago. 06, 2025 9:29:26 PM liquibase.database
+ago. 06, 2025 9:31:37 PM liquibase.database
 INFO: Set default schema name to PUBLIC
-ago. 06, 2025 9:29:26 PM liquibase.changelog
+ago. 06, 2025 9:31:37 PM liquibase.changelog
 INFO: Reading resource: db/changelog/migrations-h2/db.changelog-202408191938.sql
-ago. 06, 2025 9:29:26 PM liquibase.changelog
+ago. 06, 2025 9:31:37 PM liquibase.changelog
 INFO: Reading resource: db/changelog/migrations-h2/db.changelog-202408210954.sql
-ago. 06, 2025 9:29:26 PM liquibase.changelog
+ago. 06, 2025 9:31:37 PM liquibase.changelog
 INFO: Reading resource: db/changelog/migrations-h2/db.changelog-202408211004.sql
-ago. 06, 2025 9:29:26 PM liquibase.changelog
+ago. 06, 2025 9:31:37 PM liquibase.changelog
 INFO: Reading resource: db/changelog/migrations-h2/db.changelog-202408211005.sql
-ago. 06, 2025 9:29:26 PM liquibase.changelog
+ago. 06, 2025 9:31:37 PM liquibase.changelog
 INFO: Reading resource: db/changelog/migrations-h2/db.changelog-202408281807.sql
-ago. 06, 2025 9:29:26 PM liquibase.changelog
+ago. 06, 2025 9:31:37 PM liquibase.changelog
 INFO: Creating database history table with name: PUBLIC.DATABASECHANGELOG
-ago. 06, 2025 9:29:26 PM liquibase.changelog
+ago. 06, 2025 9:31:37 PM liquibase.changelog
 INFO: Reading from PUBLIC.DATABASECHANGELOG
-ago. 06, 2025 9:29:26 PM liquibase.lockservice
+ago. 06, 2025 9:31:37 PM liquibase.lockservice
 INFO: Successfully acquired change log lock
-ago. 06, 2025 9:29:26 PM liquibase.command
-INFO: Using deploymentId: 4526566751
-ago. 06, 2025 9:29:26 PM liquibase.changelog
+ago. 06, 2025 9:31:37 PM liquibase.command
+INFO: Using deploymentId: 4526697628
+ago. 06, 2025 9:31:37 PM liquibase.changelog
 INFO: Reading from PUBLIC.DATABASECHANGELOG
 Running Changeset: db/changelog/migrations-h2/db.changelog-202408191938.sql::202408191938::junior
-ago. 06, 2025 9:29:26 PM liquibase.changelog
+ago. 06, 2025 9:31:37 PM liquibase.changelog
 INFO: Custom SQL executed
-ago. 06, 2025 9:29:26 PM liquibase.changelog
-INFO: ChangeSet db/changelog/migrations-h2/db.changelog-202408191938.sql::202408191938::junior ran successfully in 25ms
+ago. 06, 2025 9:31:37 PM liquibase.changelog
+INFO: ChangeSet db/changelog/migrations-h2/db.changelog-202408191938.sql::202408191938::junior ran successfully in 23ms
 Running Changeset: db/changelog/migrations-h2/db.changelog-202408210954.sql::202408191938::junior
-ago. 06, 2025 9:29:26 PM liquibase.changelog
+ago. 06, 2025 9:31:37 PM liquibase.changelog
 INFO: Custom SQL executed
-ago. 06, 2025 9:29:26 PM liquibase.changelog
+ago. 06, 2025 9:31:37 PM liquibase.changelog
 INFO: ChangeSet db/changelog/migrations-h2/db.changelog-202408210954.sql::202408191938::junior ran successfully in 10ms
 Running Changeset: db/changelog/migrations-h2/db.changelog-202408211004.sql::202408191938::junior
-ago. 06, 2025 9:29:26 PM liquibase.changelog
+ago. 06, 2025 9:31:37 PM liquibase.changelog
 INFO: Custom SQL executed
-ago. 06, 2025 9:29:26 PM liquibase.changelog
+ago. 06, 2025 9:31:37 PM liquibase.changelog
 INFO: ChangeSet db/changelog/migrations-h2/db.changelog-202408211004.sql::202408191938::junior ran successfully in 4ms
 Running Changeset: db/changelog/migrations-h2/db.changelog-202408211005.sql::202408191938::junior
-ago. 06, 2025 9:29:26 PM liquibase.changelog
+ago. 06, 2025 9:31:37 PM liquibase.changelog
 INFO: Custom SQL executed
-ago. 06, 2025 9:29:26 PM liquibase.changelog
+ago. 06, 2025 9:31:37 PM liquibase.changelog
 INFO: ChangeSet db/changelog/migrations-h2/db.changelog-202408211005.sql::202408191938::junior ran successfully in 4ms
 Running Changeset: db/changelog/migrations-h2/db.changelog-202408281807.sql::202408191938::junior
-ago. 06, 2025 9:29:26 PM liquibase.changelog
+ago. 06, 2025 9:31:37 PM liquibase.changelog
 INFO: Custom SQL executed
-ago. 06, 2025 9:29:26 PM liquibase.changelog
-INFO: ChangeSet db/changelog/migrations-h2/db.changelog-202408281807.sql::202408191938::junior ran successfully in 1ms
+ago. 06, 2025 9:31:37 PM liquibase.changelog
+INFO: ChangeSet db/changelog/migrations-h2/db.changelog-202408281807.sql::202408191938::junior ran successfully in 0ms
 
 UPDATE SUMMARY
 Run:                          5
@@ -53,24 +53,24 @@ Filtered out:                 0
 -------------------------------
 Total change sets:            5
 
-ago. 06, 2025 9:29:26 PM liquibase.util
+ago. 06, 2025 9:31:37 PM liquibase.util
 INFO: UPDATE SUMMARY
-ago. 06, 2025 9:29:26 PM liquibase.util
+ago. 06, 2025 9:31:37 PM liquibase.util
 INFO: Run:                          5
-ago. 06, 2025 9:29:26 PM liquibase.util
+ago. 06, 2025 9:31:37 PM liquibase.util
 INFO: Previously run:               0
-ago. 06, 2025 9:29:26 PM liquibase.util
+ago. 06, 2025 9:31:37 PM liquibase.util
 INFO: Filtered out:                 0
-ago. 06, 2025 9:29:26 PM liquibase.util
+ago. 06, 2025 9:31:37 PM liquibase.util
 INFO: -------------------------------
-ago. 06, 2025 9:29:26 PM liquibase.util
+ago. 06, 2025 9:31:37 PM liquibase.util
 INFO: Total change sets:            5
-ago. 06, 2025 9:29:26 PM liquibase.util
+ago. 06, 2025 9:31:37 PM liquibase.util
 INFO: Update summary generated
-ago. 06, 2025 9:29:26 PM liquibase.command
+ago. 06, 2025 9:31:37 PM liquibase.command
 INFO: Update command completed successfully.
 Liquibase: Update has been successful. Rows affected: 5
-ago. 06, 2025 9:29:26 PM liquibase.lockservice
+ago. 06, 2025 9:31:37 PM liquibase.lockservice
 INFO: Successfully released change log lock
-ago. 06, 2025 9:29:26 PM liquibase.command
+ago. 06, 2025 9:31:37 PM liquibase.command
 INFO: Command execution complete
